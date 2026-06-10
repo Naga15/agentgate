@@ -23,8 +23,10 @@ The governed-invocation core, fully tested, no external dependencies beyond
 
 Each is a self-contained subproject and a natural maintainership on-ramp.
 
-- [ ] **MCP adapter** — front any Model Context Protocol server; map MCP tools
-      to gateway tools with declared kinds
+- [x] **MCP adapter** — front any Model Context Protocol server; lazy stdio
+      connection, tool discovery that maps MCP tools to gateway tools (kind
+      inferred from `readOnlyHint`/`destructiveHint`, defaulting to `write`),
+      per-call timeout. _Needs owner to extend to HTTP/SSE transport._
 - [ ] **Backstage adapter** — invoke Backstage actions / plugins through the
       gateway (composes with the existing `@theplatformlog` AI plugins)
 - [ ] **Kubernetes adapter** — read/propose/write against the K8s API with

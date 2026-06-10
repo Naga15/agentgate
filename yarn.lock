@@ -852,6 +852,11 @@ __metadata:
     ts-jest: "npm:^29.1.0"
     typescript: "npm:^5.4.0"
     zod: "npm:^3.25.76 || ^4.0.0"
+  peerDependencies:
+    "@modelcontextprotocol/sdk": ^1.0.0
+  peerDependenciesMeta:
+    "@modelcontextprotocol/sdk":
+      optional: true
   languageName: unknown
   linkType: soft
 

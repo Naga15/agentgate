@@ -122,6 +122,36 @@ await gateway.invoke({ /* same request */ approvedProposalId: r.proposal!.id });
 // → { status: 'executed', ... }
 ```
 
+## Governing an MCP server
+
+The MCP adapter fronts any [Model Context Protocol](https://modelcontextprotocol.io)
+server: it discovers the server's tools, assigns each a governance `kind`
+(inferred from MCP `readOnlyHint`/`destructiveHint` annotations, defaulting to
+the safe `write`), and routes every call through the same policy / budget /
+audit / propose pipeline. Install the optional peer dep
+(`yarn add @modelcontextprotocol/sdk`), then:
+
+```ts
+import { Gateway, ToolRegistry, McpAdapter, /* …engines… */ } from 'agentgate';
+
+const mcp = new McpAdapter([
+  { name: 'fs', command: 'npx', args: ['-y', '@modelcontextprotocol/server-filesystem', '/workspace'] },
+]);
+
+// Discover the server's tools as governed descriptors (read/propose/write).
+const tools = await mcp.discoverTools('fs');
+
+const gateway = new Gateway({
+  registry: new ToolRegistry(tools),
+  /* policy, audit, budget, proposals … */
+  adapters: { mcp },
+});
+
+// A read-annotated MCP tool runs; a destructive one comes back as a
+// proposal a human must approve — the MCP server is never asked to mutate
+// until then.
+```
+
 ## Why this shape
 
 - **Propose-only is enforced centrally, not per-tool.** A prompt-injected or

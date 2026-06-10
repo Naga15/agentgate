@@ -43,6 +43,14 @@ export {
   LocalAdapter,
   AdapterRegistry,
 } from './adapters';
+export {
+  McpAdapter,
+  type McpServerConfig,
+  type McpToolInfo,
+  type McpClient,
+  type McpClientFactory,
+  type DiscoverOptions,
+} from './McpAdapter';
 export type {
   Adapter,
   AuditEvent,
