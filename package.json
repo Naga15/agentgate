@@ -1,0 +1,61 @@
+{
+  "name": "agentgate",
+  "version": "0.1.0",
+  "description": "A governed gateway between AI agents and your internal developer platform — policy, audit, budget, and propose-only controls for agent tool calls.",
+  "license": "Apache-2.0",
+  "author": "The agentgate Authors",
+  "homepage": "https://github.com/Naga15/agentgate",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Naga15/agentgate.git"
+  },
+  "bugs": "https://github.com/Naga15/agentgate/issues",
+  "keywords": [
+    "ai",
+    "agents",
+    "mcp",
+    "model-context-protocol",
+    "platform-engineering",
+    "governance",
+    "policy",
+    "audit",
+    "kubernetes",
+    "backstage"
+  ],
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "test": "jest --no-coverage",
+    "lint": "echo \"lint: placeholder (eslint config TBD)\"",
+    "prepublishOnly": "yarn build"
+  },
+  "dependencies": {
+    "zod": "^3.25.76 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.4.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
+  "packageManager": "yarn@4.8.1"
+}

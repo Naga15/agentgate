@@ -1,0 +1,21 @@
+node_modules/
+.yarn/cache
+.yarn/install-state.gz
+.yarn/build-state.yml
+.yarn/unplugged
+.pnp.cjs
+.pnp.loader.mjs
+dist/
+coverage/
+*.tsbuildinfo
+*.log
+.DS_Store
+Thumbs.db
+.env
+.env.local
+.npmrc
+.idea/
+.vscode/
+
+# CI workflow held back until the gh token has the workflow scope (gh auth refresh -s workflow)
+.github/workflows/ci.yml
