@@ -16,6 +16,3 @@ Thumbs.db
 .npmrc
 .idea/
 .vscode/
-
-# CI workflow held back until the gh token has the workflow scope (gh auth refresh -s workflow)
-.github/workflows/ci.yml
