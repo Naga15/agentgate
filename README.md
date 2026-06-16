@@ -52,6 +52,18 @@ Nothing executes that wasn't (a) a registered tool, (b) permitted by policy,
 approved proposal. Every decision — allow, deny, propose, execute, error — is
 recorded in an append-only audit log.
 
+## See it in 30 seconds
+
+```bash
+git clone https://github.com/Naga15/agentgate && cd agentgate
+yarn install && yarn demo
+```
+
+A narrated, zero-setup walkthrough: an SRE agent investigates an incident,
+its destructive calls turn into human approvals, a runaway loop hits its
+budget, an untrusted agent is denied — and every decision is audited. See
+[`demo/`](./demo).
+
 ## Quickstart
 
 ```bash
