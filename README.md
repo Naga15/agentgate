@@ -54,6 +54,11 @@ recorded in an append-only audit log.
 
 ## See it in 30 seconds
 
+<!-- Demo recording: drop the GIF at docs/demo.gif and uncomment the line below.
+     (Record with: asciinema rec → `yarn demo` → agg to GIF.)
+![agentgate demo](docs/demo.gif)
+-->
+
 ```bash
 git clone https://github.com/Naga15/agentgate && cd agentgate
 yarn install && yarn demo
@@ -144,7 +149,10 @@ audit / propose pipeline. Install the optional peer dep
 (`yarn add @modelcontextprotocol/sdk`), then:
 
 ```ts
-import { Gateway, ToolRegistry, McpAdapter, /* …engines… */ } from 'agentgate';
+import {
+  Gateway, ToolRegistry, McpAdapter,
+  PolicyEngine, InMemoryAuditLog, InMemoryProposalStore, BudgetTracker,
+} from 'agentgate';
 
 const mcp = new McpAdapter([
   { name: 'fs', command: 'npx', args: ['-y', '@modelcontextprotocol/server-filesystem', '/workspace'] },
@@ -155,13 +163,23 @@ const tools = await mcp.discoverTools('fs');
 
 const gateway = new Gateway({
   registry: new ToolRegistry(tools),
-  /* policy, audit, budget, proposals … */
+  policy: new PolicyEngine(),
+  audit: new InMemoryAuditLog(),
+  proposals: new InMemoryProposalStore(),
+  budget: new BudgetTracker({ maxCalls: 50, maxWriteCalls: 5, maxWallclockMs: 60_000 }),
   adapters: { mcp },
 });
 
-// A read-annotated MCP tool runs; a destructive one comes back as a
-// proposal a human must approve — the MCP server is never asked to mutate
-// until then.
+const agent = { id: 'sre-agent', type: 'agent' as const };
+
+// A read-annotated MCP tool just runs:
+await gateway.invoke({ principal: agent, sessionId: 's1', tool: 'read_file', input: { path: '/workspace/x' } });
+// → { status: 'executed', output: { … } }
+
+// A destructive one (destructiveHint) comes back as a proposal — the MCP
+// server is never asked to mutate until a human approves:
+await gateway.invoke({ principal: agent, sessionId: 's1', tool: 'delete_file', input: { path: '/workspace/x' } });
+// → { status: 'proposed', proposal: { id, status: 'pending', … } }
 ```
 
 ## Why this shape
