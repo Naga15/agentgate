@@ -194,7 +194,7 @@ The near-term goal is real adapters (MCP, Backstage, Kubernetes), a
 persistent audit backend, and a minimal approval UI. We track progress
 toward [CNCF Sandbox readiness](./SANDBOX.md) in the open.
 
-**We are looking for co-maintainers and design partners.** If you run AI
+**We are looking for co-maintainers and contributors.** If you run AI
 agents against an internal platform and care about governing them, open an
 issue or see [CONTRIBUTING](./CONTRIBUTING.md).
 

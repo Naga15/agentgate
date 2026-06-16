@@ -22,7 +22,7 @@ checklist, not a claim of acceptance.
 | Security disclosure process | ✅ | [SECURITY](./SECURITY.md) |
 | A neutral, descriptive project name | ✅ | "agentgate" (working name; trademark check pending before any application) |
 | More than one independent maintainer / org | ⏳ | **Actively recruiting** — see CONTRIBUTING. Single maintainer today. |
-| Demonstrated end-user or adopter interest | ⏳ | Pre-adoption; gathering design partners |
+| Demonstrated end-user or adopter interest | ⏳ | Pre-adoption; gathering early adopters |
 | Healthy contribution activity | ⏳ | Early; kernel landed, adapters open for owners |
 
 ## What "done enough to apply" looks like

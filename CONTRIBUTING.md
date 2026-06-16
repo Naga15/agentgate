@@ -2,7 +2,7 @@
 
 Thanks for your interest — `agentgate` is early and contributions of all
 kinds (code, design feedback, docs, adapters) are genuinely welcome. We are
-explicitly **looking for co-maintainers and design partners**; see
+explicitly **looking for co-maintainers and contributors**; see
 [GOVERNANCE.md](./GOVERNANCE.md#becoming-a-maintainer).
 
 ## Ways to help right now
