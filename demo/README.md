@@ -11,6 +11,13 @@ yarn install
 yarn demo
 ```
 
+On stage, step through it act-by-act (waits for Enter between acts so you can
+narrate):
+
+```bash
+yarn demo --pause
+```
+
 ## What it shows
 
 The scenario: the `orders-api` service has a p99 latency spike, and an AI

@@ -33,10 +33,25 @@ import {
   InvocationResult,
   Principal,
 } from '../src';
+import * as readline from 'node:readline';
 
 // --- tiny console helpers (no dependencies) ---------------------------------
+// Run `yarn demo --pause` to step act-by-act (waits for Enter) — use this on
+// stage so you can narrate. Plain `yarn demo` runs straight through.
+const PAUSE = process.argv.includes('--pause');
 const line = () => console.log('─'.repeat(74));
-const section = (t: string) => {
+const pause = (): Promise<void> =>
+  !PAUSE
+    ? Promise.resolve()
+    : new Promise<void>(resolve => {
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        rl.question('\n   ⏎  (press Enter for the next act)', () => {
+          rl.close();
+          resolve();
+        });
+      });
+const section = async (t: string) => {
+  await pause();
   console.log('');
   line();
   console.log(`  ${t}`);
@@ -104,14 +119,14 @@ async function main() {
   console.log('  scenario: orders-api p99 latency spiked. The agent investigates.');
 
   // --- ACT 1: the agent reads to investigate (reads just run) -----------------
-  section('ACT 1 — Investigate: read-only tools run automatically');
+  await section('ACT 1 — Investigate: read-only tools run automatically');
   show('agent: query_logs(orders-api)',
     await gateway.invoke({ principal: agent, sessionId: sid, tool: 'query_logs', input: { service: 'orders-api' } }));
   show('agent: get_recent_deploys(orders-api)',
     await gateway.invoke({ principal: agent, sessionId: sid, tool: 'get_recent_deploys', input: { service: 'orders-api' } }));
 
   // --- ACT 2: the agent wants to ACT (writes become proposals) ----------------
-  section('ACT 2 — Act: destructive tools become proposals, never auto-run');
+  await section('ACT 2 — Act: destructive tools become proposals, never auto-run');
   const draft = await gateway.invoke({ principal: agent, sessionId: sid, tool: 'post_slack_summary', input: { text: 'p99 spike traced to v41' } });
   show('agent: post_slack_summary(...)  [kind=propose]', draft);
 
@@ -121,7 +136,7 @@ async function main() {
   console.log('     The rollback handler was never called.');
 
   // --- ACT 3: a human approves, THEN it executes ------------------------------
-  section('ACT 3 — A human approves the rollback; only now does it execute');
+  await section('ACT 3 — A human approves the rollback; only now does it execute');
   gateway.proposals.approve(rb.proposal!.id);
   console.log(`   human approved proposal ${rb.proposal!.id}`);
   const executed = await gateway.invoke({
@@ -141,7 +156,7 @@ async function main() {
 
   // --- ACT 4: the leash — a runaway agent hits the budget --------------------
   // Fresh session so the per-session cap of 8 lines up exactly with the loop.
-  section('ACT 4 — The leash: a looping agent runs out of budget (cap = 8 calls/session)');
+  await section('ACT 4 — The leash: a looping agent runs out of budget (cap = 8 calls/session)');
   const runaway = 'runaway-1';
   for (let i = 1; i <= 10; i++) {
     const r = await gateway.invoke({ principal: agent, sessionId: runaway, tool: 'query_logs', input: { service: 'orders-api', n: i } });
@@ -154,7 +169,7 @@ async function main() {
   console.log('     buggy agent cannot spend without bound.');
 
   // --- ACT 5: prompt-injection defense — untrusted principal -----------------
-  section('ACT 5 — An untrusted agent tries the same rollback');
+  await section('ACT 5 — An untrusted agent tries the same rollback');
   const evil = await gateway.invoke({
     principal: { id: 'untrusted-agent', type: 'agent' }, sessionId: 'inj-1',
     tool: 'rollback_deploy', input: { app: 'orders-api', toRevision: 'v0' },
@@ -163,7 +178,7 @@ async function main() {
   console.log('\n   ☝ Policy denied it outright — it never even became a proposal.');
 
   // --- The receipts: every decision was recorded -----------------------------
-  section('THE AUDIT LOG — every decision, on every path, recorded');
+  await section('THE AUDIT LOG — every decision, on every path, recorded');
   for (const e of audit.all()) {
     console.log(
       `   ${e.id.padEnd(9)} ${e.principalId.padEnd(16)} ${e.tool.padEnd(20)} ` +
@@ -171,7 +186,7 @@ async function main() {
     );
   }
 
-  section('Takeaways');
+  await section('Takeaways');
   console.log('   • reads run; writes/proposes need a human; deny is enforced centrally');
   console.log('   • an approval is bound to the EXACT request (no bait-and-switch)');
   console.log('   • budgets bound a runaway agent; everything is audited');
